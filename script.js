@@ -1,6 +1,10 @@
 let videoElem = document.querySelector("video");
 let recordBtn = document.querySelector(".record");
+let captureImgBtn = document.querySelector(".click-img");
+let filterArr = document.querySelectorAll(".filter");
+let filterOverlay = document.querySelector(".filter_overlay");
 let isRecording = false;
+let filterColor = "";
 // user requirement send
 let constraint = {
 audio: true, video: true
@@ -19,7 +23,7 @@ usermediaPromise.
         //uI stream
         videoElem.srcObject = stream;                                    //video and audio just stream hogi UI pe
         //browser
-        mediarecordingObjectForCurrStream = new MediaRecorder(stream);          // recording start hogi  // MediaRecorder is an Api which stores the stream in an object
+        mediarecordingObjectForCurrStream = new MediaRecorder(stream);          // recording start hogi  // MediaRecorder is an Api which stores the stream in an object iss api par onstop,onstart methoda lagaa kr recording on/off kra skte hai
         // camera recording add ->recording array
         mediarecordingObjectForCurrStream.ondataavailable = function (e){       //recording array me data(recording chunks) push hoga 
             recording.push(e.data);
@@ -41,7 +45,7 @@ usermediaPromise.
         console.log(err)
         alert("please allow both mic and cam");
     });
- recordBtn.addEventListener("click",function(){                          // agar user allow nhi krta device ko to ye msg show hoga usey
+ recordBtn.addEventListener("click",function () {                          // agar user allow nhi krta device ko to ye msg show hoga usey
     if (mediarecordingObjectForCurrStream == undefined) {
         alert("first select the device");
         return;
@@ -55,4 +59,31 @@ usermediaPromise.
         recordBtn.innerText = "Record";       
     }
     isRecording = !isRecording;            //recording ki state change krne ke liye
- })    
+ })
+ captureImgBtn.addEventListener("click",function () {
+     //canvas create
+     let canvas = document.createElement("canvas");
+     canvas.height = videoElem.videoHeight;
+     canvas.width = videoElem.videoWidth;
+     let tool = canvas.getContext("2d");
+     tool.drawImage(videoElem,0,0);
+     if(filterColor){
+         tool.fillStyle=filterColor;
+         tool.fillRect(0,0,canvas.width,canvas.height);
+     }
+     let url = canvas.toDataURL();
+     let a= document.createElement("a");
+     a.download = "file.png";
+     a.href = url;
+     a.click();
+     a.remove();
+
+ })
+ // to add filter on ui
+ // filter array
+ for (let i=0;i<filterArr.length;i++){
+     filterArr[i].addEventListener("click", function(){
+         filterColor = filterArr[i].style.backgroundColor;
+         filterOverlay.style.backgroundColor = filterColor;
+     })
+ }

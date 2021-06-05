@@ -19,8 +19,36 @@ body{
     width: 5rem;
     top : 30%;
     right: 26px;
-    border-radius: 50%;;
+    border-radius: 50%;
+    z-index:4;
 }
-.click{
+.click-img{
     top: 45%;
+}
+.filter_overlay{
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    
+    z-index:2;
+}
+.filter_btn_container{
+    height: 17rem;
+    width: 7rem;
+    position: fixed;
+    top: calc( (100vh - 17rem)/2 );  /* space b/w operator and operand is must in calc case */ 
+    left: 8vw;
+    z-index:4;
+    background-color: red;
+}
+.filter{
+    height: 20%;
+    border: 1px solid;
+    /* background-color,background-image will be blended */
+    background-blend-mode: color-burn;         /* to mix color with image*/
+    background-image: url(https://picsum.photos/200/300);   /* to add background image */
+    /* width of the background image */
+    background-size: 100%;
 }
