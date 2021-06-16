@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    .box{
+        height: 6rem;
+        width: 6rem; 
+        margin: 4rem;
+        border: 5px solid;
+    }
+    .box-1{
+        animation: scaleUp 10s;      
+        /* animation: animation ka naam , kitne seconds main complete ho animation , or bhi diff cheeje de skte hai */
+        animation-fill-mode: forwards;
+    }
+    .box-2{
+        animation : moveLeftRight 3s;
+        /* to add delay */
+        animation-delay: 3s;
+          /* no. of times animation should iterate  */
+        animation-iteration-count: 5;
+        /* animation ki speed  */
+        animation-timing-function: ease-out;
+    }
+    .box-3{
+        animation: fadeIn 2s;
+        animation-delay: 3s;
+        animation-iteration-count: infinite;
+        background-color: lightcoral;
+    }
+
+    /* name of the anmation */
+    @keyframes scaleUp {
+        0% {
+            /* transform se hum diff. properties de skte hai */
+            transform: scale(1);    
+            border-radius: 10%;
+            background-color: lightblue;
+        }
+        25%{
+            transform: scale(1.25);
+            border-radius: 20%;
+            background-color: rgb(117, 168, 185);
+        }
+        50%{
+            transform: scale(1.50);
+            border-radius: 30%;
+            background-color: rgb(60, 108, 124);
+        }
+        75%{
+            transform: scale(2);
+            border-radius: 50%;
+            background-color: rgb(29, 77, 94);
+        }
+    }
+    @keyframes moveLeftRight{
+        0% {
+            transform: translateX(0px);
+        }
+        50%{
+            transform:translateX(300px);
+        }
+        100%{
+            transform: translateX(600px);
+        }
+    }
+    @keyframes fadeIn{
+        0%{
+            opacity: 1;
+        }
+        100%{
+            opacity: 0;
+        }
+    }
+    </style>
+    
+</head>
+<body>
+    <div class="box box-1"></div>
+    <div class="box box-2"></div>
+    <div class="box box-3"></div>
+</body>
+</html>

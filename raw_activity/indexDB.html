@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    
+    <input type="text" class="addKey" placeholder="idx">
+    <input type="text" class="addValue" placeholder="value">
+    <button class="submit">submit</button>
+    <button class="open">open IndexDB</button>
+    <script>
+        let openElem = document.querySelector(".open");
+        let addTask = document.querySelector(".submit");
+        let keyInput = document.querySelector(".addKey");
+        let addInput = document.querySelector(".addValue");
+        let db;
+        //db create table
+        openElem.addEventListener("click",function () {
+            //db name
+            let indexDbObj =indexedDB.open("notes",2);
+            indexDbObj.addEventListener("success",function(e){
+                //open
+                db = indexDbObj.result;
+                alert("success");
+            })
+            indexDbObj.addEventListener("error",function (e){
+                alert("error");
+            })
+            indexDbObj.addEventListener("upgradeneeded",function(e){
+                //first create
+                alert("upgradeCalled");
+                db = indexDbObj.result;
+                //table define
+                db.createObjectStore("abc",{
+                    keyPath: "id"
+                })
+            })
+        })
+        addTask.addEventListener("click",function(){
+            if(db){
+                let txAccess = db.transaction("abc","readwrite");
+                let abcStore = txAccess.objectStore("abc");
+                let abcEntry = {
+                    id: keyInput.value,
+                    value: addInput.value
+                }
+                abcStore.add(abcEntry);
+            }
+        })
+    </script>
+</body>
+</html>

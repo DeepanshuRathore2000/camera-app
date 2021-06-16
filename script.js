@@ -4,10 +4,14 @@ let captureImgBtn = document.querySelector(".click-img");
 let filterArr = document.querySelectorAll(".filter");
 let filterOverlay = document.querySelector(".filter_overlay");
 let timings = document.querySelector(".timing");
+let minusBtn = document.querySelector(".minus");
+let plusBtn = document.querySelector(".plus");
+let galleryBtn = document.querySelector(".gallery");
 let isRecording = false;
 let filterColor = "";
 let counter=0;
 let clearObj;
+let scaleLevel = 1;
 // user requirement send
 let constraint = {
 audio: true, video: true
@@ -35,13 +39,14 @@ usermediaPromise.
             //recording -> url convert
             // type-> MIME type;
             const blob = new Blob(recording,{ type:'video/mp4' }); //video ko url me convert krne ke liye blob use
-            const url = window.URL.createObjectURL(blob);
-            let a = document.createElement("a");
-            a.download = "file.mp4";             // to download video
-            a.href = url;
-            a.click();
+            // const url = window.URL.createObjectURL(blob);
+            // let a = document.createElement("a");
+            // a.download = "file.mp4";             // to download video
+            // a.href = url;
+            // a.click();
             recording = [];          // recording array empty krna hoga after video download
-        }       
+            addMediaToGallery(blob,"video");
+        };    
                
     })
     .catch (function (err){
@@ -55,35 +60,43 @@ usermediaPromise.
     }
     if(isRecording == false) {
         mediarecordingObjectForCurrStream.start();
-        recordBtn.innerText = "Recording...";
+        // recordBtn.innerText = "Recording...";
+        recordBtn.classList.add("record-animation");
         startTimer();
     }
     else{
         stopTimer();
         mediarecordingObjectForCurrStream.stop();
-        recordBtn.innerText = "Record";       
+        // recordBtn.innerText = "Record";       
+        recordBtn.classList.remove("record-animation");
     }
     isRecording = !isRecording;            //recording ki state change krne ke liye
  })
  captureImgBtn.addEventListener("click",function () {
      //canvas create
+     captureImgBtn.classList.add("capture-animation");
      let canvas = document.createElement("canvas");
      canvas.height = videoElem.videoHeight;
      canvas.width = videoElem.videoWidth;
      let tool = canvas.getContext("2d");
-     tool.drawImage(videoElem,0,0);
+    //  Scaling from center
+    tool.scale(scaleLevel,scaleLevel);
+    const x = (tool.canvas.width / scaleLevel - videoElem.videoWidth) /2;
+    const y = (tool.canvas.height / scaleLevel - videoElem.videoHeight) /2;
+    tool.drawImage(videoElem,x,y);
      if(filterColor){
          tool.fillStyle=filterColor;
          tool.fillRect(0,0,canvas.width,canvas.height);
      }
-     let url = canvas.toDataURL();
-     let a= document.createElement("a");
-     a.download = "file.png";
-     a.href = url;
-     a.click();
-     a.remove();
-
- })
+    //  let url = canvas.toDataURL();
+    //  let a= document.createElement("a");
+    //  a.download = "file.png";
+    //  a.href = url;
+    //  a.click();
+    //  a.remove();
+     addMediaToGallery(canvas.toDataURL(),"img");
+ });
+ captureImgBtn.classList.remove("capture-animation");
  // to add filter on ui
  // filter array
  for (let i=0;i<filterArr.length;i++){
@@ -93,6 +106,7 @@ usermediaPromise.
      })
  }
 
+ //timer
  function startTimer() {
      timings.style.display = "block";
      function fn() {
@@ -112,3 +126,24 @@ usermediaPromise.
      timings.style.display = "none";
      clearInterval(clearObj);
  }
+
+// zoom in ,zoom out
+ minusBtn.addEventListener("click",function(){
+     if(scaleLevel > 1 ){
+         scaleLevel = scaleLevel - 0.1;
+         videoElem.style.transform = `scale(${scaleLevel})`;
+     }
+ })
+ plusBtn.addEventListener("click",function(){
+    if(scaleLevel < 1.7 ){
+        scaleLevel = scaleLevel + 0.1;
+        videoElem.style.transform = `scale(${scaleLevel})`;
+    }
+})
+
+//gallery button
+galleryBtn.addEventListener("click",function(){
+    console.log("hello");
+    location.assign("gallery.html");
+
+})
